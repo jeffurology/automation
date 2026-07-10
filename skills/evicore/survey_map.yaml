@@ -1,0 +1,51 @@
+# survey_map.yaml — every clinical question EviCore asked in the recordings,
+# mapped to the case-packet field that answers it.
+#
+# The agent uses this to answer the ~10% that varies. Rules:
+#   - Match the portal's question text to `question` (substring / fuzzy match ok).
+#   - Read the answer from `packet.<field>`.
+#   - `type` tells the agent how to enter it (yesno -> radio, text -> textbox,
+#     choice -> select the matching option).
+#   - If the mapped packet field is empty/absent, or the question isn't listed
+#     here at all, the agent writes NEEDS_HUMAN and stops. Never guess.
+#
+# Populated by Step 3 from the recorded auths. Vary the indication across
+# recordings (staging PET, recurrence PET, chest CT) so every survey branch
+# gets captured here. Entries below are illustrative placeholders — replace
+# with the real questions your recordings surface.
+
+version: 1
+portal: evicore
+
+questions:
+  - question: "Prior conventional imaging performed?"
+    field: packet.prior_imaging.performed
+    type: yesno
+
+  - question: "Date of most recent prior imaging"
+    field: packet.prior_imaging.date
+    type: text
+    when: packet.prior_imaging.performed == true
+
+  - question: "Primary indication for this study"
+    field: packet.indication
+    type: choice
+    options: [staging, recurrence, surveillance, diagnostic]
+
+  - question: "Cancer type / primary site"
+    field: packet.diagnosis.primary_site
+    type: text
+
+  - question: "Has the patient completed prior treatment?"
+    field: packet.treatment.completed
+    type: yesno
+
+  - question: "Symptoms or clinical findings prompting this study"
+    field: packet.clinical_findings
+    type: text
+
+# Fields the agent must NEVER answer from anything but the packet.
+# If any of these are needed and missing -> NEEDS_HUMAN.
+required_from_packet:
+  - packet.indication
+  - packet.diagnosis.primary_site
