@@ -1,0 +1,4 @@
+# Python deps for the production loop (Step 4).
+claude-agent-sdk>=0.1.0
+# Optional: event-driven folder watch (watch.py falls back to polling without it).
+watchdog>=4.0.0
