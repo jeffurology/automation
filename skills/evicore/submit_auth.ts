@@ -97,7 +97,9 @@ async function login(page: Page) {
   const pw = process.env.EVICORE_PW;
   if (!user || !pw) throw new Error("EVICORE_USER / EVICORE_PW must be set in the environment.");
 
-  await page.goto(selectors._meta.start_url);
+  // PA_START_URL lets a smoke test point the driver at a local mock portal;
+  // unset in production, where it uses the portal's real start URL.
+  await page.goto(process.env.PA_START_URL ?? selectors._meta.start_url);
   // Already signed in via the persistent profile? Skip login.
   if (await sel(page, "member_search.member_id").isVisible().catch(() => false)) return;
 
@@ -187,10 +189,19 @@ function parseArgs() {
 // Only run when invoked directly (not when imported).
 if (import.meta.url === `file://${process.argv[1]}`) {
   const { caseId, headed } = parseArgs();
-  run(caseId, headed).catch((err) => {
-    console.error("submit_auth failed:", err);
-    process.exit(1);
-  });
+  run(caseId, headed)
+    .then(async ({ context }) => {
+      // In production the context stays open for the agent to drive the survey.
+      // PA_CLOSE_ON_DONE (used by the smoke test) closes it so the process exits.
+      if (process.env.PA_CLOSE_ON_DONE) {
+        await context.close();
+        process.exit(0);
+      }
+    })
+    .catch((err) => {
+      console.error("submit_auth failed:", err);
+      process.exit(1);
+    });
 }
 
 export { run, sel, resolveLocator, loadPacket };

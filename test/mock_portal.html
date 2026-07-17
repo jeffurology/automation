@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  Mock EviCore portal for smoke-testing submit_auth.ts WITHOUT real credentials
+  or PHI. Every label/role here matches skills/evicore/selectors.json, so the
+  deterministic driver walks it end to end exactly as it would the real portal.
+  Each "Continue"/"Search"/"Sign In" reveals the next step, mirroring the real
+  multi-step flow. It intentionally STOPS at a Review heading and never submits.
+-->
+<html lang="en">
+<head><meta charset="utf-8"><title>Mock Portal</title></head>
+<body>
+<h1>Mock EviCore</h1>
+
+<!-- Step 0: login (member search hidden until signed in, so login is exercised) -->
+<section id="login">
+  <label>Username <input aria-label="Username"></label>
+  <label>Password <input aria-label="Password" type="password"></label>
+  <button onclick="show('member')">Sign In</button>
+</section>
+
+<!-- Step 1: member search -->
+<section id="member" hidden>
+  <label>Member ID <input aria-label="Member ID" id="mid"></label>
+  <label>Date of Birth <input aria-label="Date of Birth"></label>
+  <button onclick="showResult()">Search</button>
+  <table><tbody id="results"></tbody></table>
+</section>
+
+<!-- Step 2: demographics -->
+<section id="demographics" hidden>
+  <label>First Name <input aria-label="First Name"></label>
+  <label>Last Name <input aria-label="Last Name"></label>
+  <label>Phone <input aria-label="Phone"></label>
+  <button onclick="show('codes')">Continue</button>
+</section>
+
+<!-- Step 3: CPT / ICD -->
+<section id="codes" hidden>
+  <label>CPT Code <input aria-label="CPT Code"></label>
+  <button onclick="void 0">Add CPT</button>
+  <label>Diagnosis (ICD-10) <input aria-label="Diagnosis (ICD-10)"></label>
+  <button onclick="void 0">Add Diagnosis</button>
+  <button onclick="show('documents')">Continue</button>
+</section>
+
+<!-- Step 4: document upload -->
+<section id="documents" hidden>
+  <label>Upload clinical documents
+    <input aria-label="Upload clinical documents" type="file" multiple onchange="listFiles(this)">
+  </label>
+  <ul id="uploaded"></ul>
+  <button onclick="show('survey')">Continue</button>
+</section>
+
+<!-- Step 5: clinical survey + review (driver STOPS here; agent territory) -->
+<section id="survey" hidden>
+  <div role="group" aria-label="Clinical survey">
+    <p>Prior conventional imaging performed?</p>
+    <label><input type="radio" name="q1" aria-label="Yes"> Yes</label>
+    <label><input type="radio" name="q1" aria-label="No"> No</label>
+    <button onclick="show('review')">Next</button>
+  </div>
+</section>
+<section id="review" hidden>
+  <h2>Review</h2>
+  <button>Submit</button>
+  <p>Authorization Number: (not issued in mock)</p>
+</section>
+
+<script>
+  // One step at a time, like the real portal: hide all sections, show the target.
+  function show(id){
+    document.querySelectorAll('section').forEach(s => s.hidden = true);
+    document.getElementById(id).hidden = false;
+  }
+  function showResult(){
+    const id = document.getElementById('mid').value || 'W123456789';
+    document.getElementById('results').innerHTML =
+      '<tr onclick="show(\'demographics\')" style="cursor:pointer"><td>'+id+'</td><td>Select</td></tr>';
+  }
+  function listFiles(input){
+    const ul = document.getElementById('uploaded');
+    ul.innerHTML = '';
+    for (const f of input.files){ const li=document.createElement('li'); li.textContent=f.name; ul.appendChild(li); }
+  }
+</script>
+</body>
+</html>

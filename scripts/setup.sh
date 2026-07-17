@@ -18,6 +18,9 @@ npm i -g playwright
 echo "==> Installing Chromium for Playwright"
 npx playwright install chromium
 
+echo "==> Installing local project deps (playwright, tsx) for the driver + smoke test"
+( cd "$HERE/.." && npm install )
+
 # One MCP server, but each run points it at a per-portal profile dir via
 # --user-data-dir so login/MFA state is isolated and persistent per portal.
 # Default profile below is evicore; the SDK runner (runner/run_case.py)

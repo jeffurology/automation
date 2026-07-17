@@ -124,6 +124,44 @@ fails → the agent falls back to accessibility-tree exploration, finds the fiel
 finishes the auth, then **patches `selectors.json` and shows you the diff**. A
 portal change costs one slower run instead of a dead pipeline.
 
+## Testing
+
+You can validate the whole deterministic path **without EviCore credentials or
+any PHI**, using a bundled mock portal whose labels/roles match
+`selectors.json`.
+
+**1. Smoke test (end-to-end against the mock portal):**
+
+```bash
+bash test/smoke.sh          # headless
+HEADED=1 bash test/smoke.sh # watch it drive the browser
+```
+
+It serves `test/mock_portal.html`, drives `submit_auth.ts` through login →
+member search → demographics → CPT/ICD → document upload, and asserts every
+audit screenshot was produced and that it **stops at the survey** (never
+submits). All data lives in a throwaway temp dir — `/opt/pa` is untouched.
+
+**2. Unit-test the credential scrubber** (the one piece with real logic):
+
+```bash
+# make a fake recording with a plaintext password, then confirm it gets scrubbed
+node scripts/scrub-credentials.mjs test/  --portal evicore   # dry run, reports findings
+```
+
+**3. Static checks** (syntax only, no browser):
+
+```bash
+node --check scripts/scrub-credentials.mjs
+python3 -m py_compile runner/*.py
+node --experimental-strip-types --check skills/evicore/submit_auth.ts
+```
+
+**4. Against real EviCore** (final step, needs credentials + a real case): fill
+`.env`, run `scripts/setup.sh evicore`, drop a real `packet.json` under
+`$PA_ROOT/cases/<id>/`, and run `python runner/run_case.py --case <id> --headed`
+so you can watch. It stops at the review screen for you to eyeball and submit.
+
 ## The through-line
 
 This record-then-freeze cycle is exactly what Skyvern calls workflow generation.
