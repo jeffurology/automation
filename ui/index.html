@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PA Intake</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#14181f; --muted:#5b6472; --line:#e2e6ec;
+    --accent:#2f6feb; --accent-ink:#fff; --ok:#137a4b; --okbg:#e7f6ee; --warn:#8a5a00;
+    --field:#fff; --fieldline:#cfd6e0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1216; --card:#171b21; --ink:#e8ecf2; --muted:#9aa4b2; --line:#262c35;
+      --accent:#4f8cff; --accent-ink:#0a0d12; --ok:#4fd493; --okbg:#12241b; --warn:#e0a94a;
+      --field:#0f1319; --fieldline:#333b46;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 20px;font-size:13px}
+  form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  fieldset{border:none;padding:0;margin:0 0 18px}
+  legend{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--muted);padding:0;margin:0 0 10px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media (max-width:560px){.row,.row3{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 4px}
+  .req label::after{content:" *";color:var(--accent)}
+  input,select,textarea{width:100%;background:var(--field);color:var(--ink);
+    border:1px solid var(--fieldline);border-radius:8px;padding:9px 11px;font:inherit}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+  textarea{min-height:96px;resize:vertical}
+  .field{margin:0 0 12px}
+  .check{display:flex;align-items:center;gap:8px;margin:6px 0 0}
+  .check input{width:auto}
+  .actions{display:flex;align-items:center;gap:14px;margin-top:8px}
+  button{background:var(--accent);color:var(--accent-ink);border:none;border-radius:8px;
+    padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6;cursor:progress}
+  .hint{color:var(--muted);font-size:12px}
+  .result{margin-top:16px;border-radius:10px;padding:14px 16px;display:none}
+  .result.ok{display:block;background:var(--okbg);border:1px solid var(--ok);color:var(--ink)}
+  .result.err{display:block;background:#fde8e8;border:1px solid #c0392b;color:#7a1f16}
+  @media (prefers-color-scheme: dark){.result.err{background:#2a1514;border-color:#e06a5c;color:#f2c9c3}}
+  .result code{background:rgba(127,127,127,.16);padding:1px 6px;border-radius:5px;font-size:13px}
+  .kv{margin:6px 0 0;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prior-Auth Intake</h1>
+  <p class="sub">Enter the case and start the run. The browser stops at the review screen for you to submit — nothing is auto-submitted.</p>
+
+  <form id="f">
+    <fieldset>
+      <legend>Patient</legend>
+      <div class="row">
+        <div class="field req"><label for="first_name">First name</label>
+          <input id="first_name" name="first_name" required autocomplete="off"></div>
+        <div class="field req"><label for="last_name">Last name</label>
+          <input id="last_name" name="last_name" required autocomplete="off"></div>
+      </div>
+      <div class="row3">
+        <div class="field req"><label for="member_id">Member ID</label>
+          <input id="member_id" name="member_id" required autocomplete="off"></div>
+        <div class="field"><label for="dob">Date of birth</label>
+          <input id="dob" name="dob" type="date"></div>
+        <div class="field"><label for="phone">Phone</label>
+          <input id="phone" name="phone" autocomplete="off"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Request</legend>
+      <div class="row3">
+        <div class="field"><label for="portal">Portal</label>
+          <select id="portal" name="portal">
+            <option value="evicore">EviCore</option>
+            <option value="cohere">Cohere</option>
+          </select></div>
+        <div class="field"><label for="indication">Indication</label>
+          <select id="indication" name="indication">
+            <option value="">—</option>
+            <option value="staging">Staging</option>
+            <option value="recurrence">Recurrence</option>
+            <option value="surveillance">Surveillance</option>
+            <option value="diagnostic">Diagnostic</option>
+          </select></div>
+        <div class="field"><label for="primary_site">Primary site</label>
+          <input id="primary_site" name="primary_site" placeholder="e.g. prostate" autocomplete="off"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="cpt">CPT code(s)</label>
+          <input id="cpt" name="cpt" placeholder="comma-separated, e.g. 78815" autocomplete="off"></div>
+        <div class="field"><label for="icd">ICD-10 code(s)</label>
+          <input id="icd" name="icd" placeholder="comma-separated, e.g. C61" autocomplete="off"></div>
+      </div>
+      <div class="check">
+        <input id="prior_imaging" name="prior_imaging" type="checkbox">
+        <label for="prior_imaging" style="margin:0">Prior conventional imaging performed</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Clinical</legend>
+      <div class="field req"><label for="clinical">Clinical notes / findings</label>
+        <textarea id="clinical" name="clinical" required
+          placeholder="Symptoms, history, and findings that support the request. The agent answers survey questions only from what's here + the fields above."></textarea></div>
+    </fieldset>
+
+    <div class="check">
+      <input id="run_now" name="run_now" type="checkbox" checked>
+      <label for="run_now" style="margin:0">Start the run now (headed browser)</label>
+    </div>
+
+    <div class="actions">
+      <button id="submit" type="submit">Create case &amp; run</button>
+      <span class="hint">Runs locally — nothing is sent off this machine.</span>
+    </div>
+  </form>
+
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+  const form = document.getElementById('f');
+  const box = document.getElementById('result');
+  const btn = document.getElementById('submit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    box.className = 'result';
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.prior_imaging = form.prior_imaging.checked;
+    data.run_now = form.run_now.checked;
+    try {
+      const res = await fetch('/submit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || 'Request failed');
+      box.className = 'result ok';
+      box.innerHTML =
+        '<strong>Case created:</strong> <code>'+j.case_id+'</code>' +
+        '<div class="kv">Packet: <code>'+j.packet_path+'</code></div>' +
+        '<div class="kv">Screenshots will land in: <code>'+j.audit_dir+'</code></div>' +
+        '<div class="kv">'+(j.triggered
+            ? 'Run started in a headed browser — it will stop at the review screen for you to submit.'
+            : 'Queued. The watcher (or <code>run_case.py</code>) will pick it up.')+'</div>' +
+        '<div class="kv">Any field the agent can\'t source becomes <code>NEEDS_HUMAN</code> and it stops.</div>';
+      form.reset();
+    } catch (err) {
+      box.className = 'result err';
+      box.textContent = 'Error: ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# PHI / secrets — NEVER commit. The whole data root lives outside the repo by
+# default (PA_ROOT=/opt/pa), but ignore these names in case anyone points it here.
+/opt/pa/
+profiles/
+traces/
+recordings/
+cases/
+audit/
+inbox/
+*.trace.zip
+*.spec.ts        # recorded specs may contain member data + typed text
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Node / build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

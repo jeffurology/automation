@@ -1,0 +1,22 @@
+{
+  "name": "pa-portal-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Record-then-freeze prior-authorization automation for payer portals (EviCore, Cohere, ...).",
+  "type": "module",
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "record": "bash scripts/record.sh",
+    "trace": "bash scripts/show-trace.sh",
+    "scrub": "node scripts/scrub-credentials.mjs",
+    "submit:evicore": "tsx skills/evicore/submit_auth.ts"
+  },
+  "dependencies": {
+    "@playwright/mcp": "latest",
+    "playwright": "^1.48.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

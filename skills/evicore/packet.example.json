@@ -1,0 +1,30 @@
+{
+  "case_id": "CASE01",
+  "portal": "evicore",
+  "member": {
+    "id": "W123456789",
+    "dob": "1958-03-14",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "phone": "555-201-8890"
+  },
+  "cpt": ["78815"],
+  "icd": ["C61"],
+  "documents": [
+    "/opt/pa/cases/CASE01/clinical_notes.pdf",
+    "/opt/pa/cases/CASE01/prior_imaging_report.pdf"
+  ],
+  "indication": "staging",
+  "diagnosis": {
+    "primary_site": "prostate"
+  },
+  "prior_imaging": {
+    "performed": true,
+    "date": "2026-05-02"
+  },
+  "treatment": {
+    "completed": false
+  },
+  "clinical_findings": "Rising PSA with negative conventional imaging; staging PET requested.",
+  "_note": "Survey answers are read ONLY from this file. Any question whose mapped field is missing/empty -> the agent writes NEEDS_HUMAN and stops."
+}

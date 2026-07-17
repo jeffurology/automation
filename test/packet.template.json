@@ -1,0 +1,18 @@
+{
+  "case_id": "SMOKE01",
+  "portal": "evicore",
+  "member": {
+    "id": "W123456789",
+    "dob": "1958-03-14",
+    "first_name": "Test",
+    "last_name": "Patient",
+    "phone": "555-000-0000"
+  },
+  "cpt": ["78815"],
+  "icd": ["C61"],
+  "documents": ["__PDF__"],
+  "indication": "staging",
+  "diagnosis": { "primary_site": "prostate" },
+  "prior_imaging": { "performed": true, "date": "2026-05-02" },
+  "clinical_findings": "Synthetic test data — no PHI."
+}

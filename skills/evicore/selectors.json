@@ -1,0 +1,52 @@
+{
+  "_comment": "Every EviCore element in one place. This is the file you patch when the portal changes. Each entry is a structured locator descriptor resolved by submit_auth.ts (resolveLocator). Prefer role/label/text (resilient) over css/xpath (fragile). {{var}} tokens are interpolated from the runtime context (e.g. member_id). Populated by Step 3 from the recorded specs + traces.",
+  "_meta": {
+    "portal": "evicore",
+    "start_url": "https://www.evicore.com",
+    "last_verified": null,
+    "source_recordings": []
+  },
+  "login": {
+    "username":  { "label": "Username" },
+    "password":  { "label": "Password" },
+    "submit":    { "role": "button", "name": "Sign In" },
+    "mfa_prompt":{ "text": "Verify your identity" }
+  },
+  "member_search": {
+    "member_id":     { "label": "Member ID" },
+    "dob":           { "label": "Date of Birth" },
+    "search_button": { "role": "button", "name": "Search" },
+    "result_row":    { "role": "row", "hasText": "{{member_id}}" },
+    "disambiguation_modal": { "role": "dialog", "name": "Select Member" }
+  },
+  "demographics": {
+    "first_name": { "label": "First Name" },
+    "last_name":  { "label": "Last Name" },
+    "phone":      { "label": "Phone" },
+    "continue":   { "role": "button", "name": "Continue" }
+  },
+  "codes": {
+    "cpt_input": { "label": "CPT Code" },
+    "cpt_add":   { "role": "button", "name": "Add CPT" },
+    "icd_input": { "label": "Diagnosis (ICD-10)" },
+    "icd_add":   { "role": "button", "name": "Add Diagnosis" },
+    "continue":  { "role": "button", "name": "Continue" }
+  },
+  "documents": {
+    "upload_input":  { "label": "Upload clinical documents" },
+    "uploaded_item": { "role": "listitem", "hasText": ".pdf" },
+    "continue":      { "role": "button", "name": "Continue" }
+  },
+  "survey": {
+    "question_stem": { "role": "group" },
+    "radio_yes":     { "role": "radio", "name": "Yes" },
+    "radio_no":      { "role": "radio", "name": "No" },
+    "text_answer":   { "role": "textbox" },
+    "next":          { "role": "button", "name": "Next" }
+  },
+  "review": {
+    "review_heading": { "role": "heading", "name": "Review" },
+    "submit_button":  { "role": "button", "name": "Submit" },
+    "auth_number":    { "text": "Authorization (Number|#)", "regex": true, "flags": "i" }
+  }
+}
