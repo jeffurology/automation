@@ -92,6 +92,29 @@ The output is `skills/evicore/` (scaffolded here — fill it from your real
 recordings). `selectors.json` is the single file you patch when the portal
 changes.
 
+## Intake UI (easy trigger)
+
+A local web form for the coordinator to enter a case and start a run — no
+editing JSON by hand.
+
+```bash
+python ui/server.py            # http://127.0.0.1:8080
+PA_UI_PORT=9000 python ui/server.py
+```
+
+Open the URL, enter **patient name, member ID, and clinical notes** (plus
+optional DOB, CPT/ICD, indication), and submit. The server:
+
+1. builds a `packet.json` in `$PA_ROOT/cases/<case_id>/` (and a copy in the
+   watched `$PA_ROOT/inbox/`),
+2. optionally starts the run in a headed browser (the "Start the run now"
+   checkbox),
+3. shows you the case id and where screenshots will land.
+
+The run stops at the review screen — nothing is auto-submitted, and any survey
+field the agent can't source becomes `NEEDS_HUMAN`. **It binds to `127.0.0.1`
+only** — patient data never leaves the machine; do not expose the port.
+
 ## Step 4 — The production loop
 
 Scrub credentials first (ingestion step one):
